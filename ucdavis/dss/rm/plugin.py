@@ -19,7 +19,7 @@ class RmHelper( # -*- implemented plugins -*-
 
     """
 
-    meta_type = 'rm Helper'
+    meta_type = 'DSS Roles Management Helper'
     security = ClassSecurityInfo()
 
     def __init__( self, id, title=None ):
