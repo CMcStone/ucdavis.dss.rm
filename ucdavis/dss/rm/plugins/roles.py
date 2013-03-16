@@ -7,7 +7,7 @@ class RolesPlugin(BasePlugin):
     """
     security = ClassSecurityInfo()
 
-    security.declarePrivate('getRoles ForPrincipal')
+    security.declarePrivate('getRolesForPrincipal')
     def getRolesForPrincipal(self, principal, request=None):
         """principal -> (role_1, ... role_N)
 
