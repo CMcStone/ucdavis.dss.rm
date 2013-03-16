@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <body>
+    <h1 tal:replace="structure here/manage_page_header">Header</h1>
+
+    <h2 tal:define="form_title string:UC Davis DSS Roles Management Plugin"
+        tal:replace="structure here/manage_form_title">Form Title</h2>
+
+    <p class="form-help">
+      The DSS Roles Management plugin allows using users and roles from the DSS RM application.
+    </p>
+
+    <form action="manage_add_rm_form" method="post">
+      <table>
+        <tr>
+          <td class="form-label">Id</td>
+          <td><input type="text" name="id" tal:attributes="value request/id|string:DSS RM"/></td>
+        </tr>
+        <tr>
+          <td class="form-label">Title</td>
+          <td><input type="text" name="title"/></td>
+        </tr>
+        <tr>
+          <td class="form-label">DSS RM Instance URL</td>
+          <td><input type="text" name="dssrm_url" tal:attributes="value request/dssrm_url|string:https://roles.dss.ucdavis.edu/"/></td>
+        </tr>
+        <tr>
+          <td class="form-label">Application ID</td>
+          <td><input type="text" name="application_id" tal:attributes="value request/application_id|string:1"/></td>
+        </tr>
+        <tr>
+          <td class="form-label">API username</td>
+          <td><input type="text" name="api_username" tal:attributes="value request/api_username|string:Plone"/></td>
+        </tr>
+        <tr>
+          <td class="form-label">API key</td>
+          <td><input type="text" name="api_key" tal:attributes="value request/api_key|string:12345"/></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="form-element">
+              <input type="submit" value="add plugin"/>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>
+
