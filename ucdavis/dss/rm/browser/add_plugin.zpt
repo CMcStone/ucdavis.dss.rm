@@ -3,14 +3,14 @@
   <body>
     <h1 tal:replace="structure here/manage_page_header">Header</h1>
 
-    <h2 tal:define="form_title string:UC Davis DSS Roles Management Plugin"
+    <h2 tal:define="form_title string:Add UC Davis DSS Roles Management Plugin"
         tal:replace="structure here/manage_form_title">Form Title</h2>
 
     <p class="form-help">
       The DSS Roles Management plugin allows using users and roles from the DSS RM application.
     </p>
 
-    <form action="manage_add_rm_form" method="post">
+    <form action="manage_add_rm_helper" method="post" enctype="multipart/form-data">
       <table>
         <tr>
           <td class="form-label">Id</td>
