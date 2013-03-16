@@ -8,10 +8,16 @@ manage_add_rm_form = PageTemplateFile('browser/add_plugin',
                             globals(), __name__='manage_add_rm_form' )
 
 
-def manage_add_rm_helper( dispatcher, id, title=None, REQUEST=None ):
+def manage_add_rm_helper( dispatcher, id, title=None, dssrm_url=None,
+                          application_id=None, api_username=None,
+                          api_key=None, REQUEST=None ):
     """Add a UC Davis DSS Roles Management Helper to the PluggableAuthentication Service."""
 
     sp = plugin.RmHelper( id, title )
+    sp.dssrm_url = dssrm_url
+    sp.application_id = application_id
+    sp.api_username = api_username
+    sp.api_key = api_key
     dispatcher._setObject( sp.getId(), sp )
 
     if REQUEST is not None:
