@@ -14,7 +14,7 @@ class RmHelper( # -*- implemented plugins -*-
                     plugins.properties.PropertiesPlugin,
                     plugins.user_enumeration.UserEnumerationPlugin,
                     plugins.roles.RolesPlugin,
-                               ):
+                    BasePlugin           ):
     """Multi-plugin
 
     """
@@ -22,9 +22,46 @@ class RmHelper( # -*- implemented plugins -*-
     meta_type = 'DSS Roles Management Helper'
     security = ClassSecurityInfo()
 
-    def __init__( self, id, title=None ):
+
+    _properties = BasePlugin._properties + (
+            {'id'    : 'dssrm_url',
+             'label' : 'Base URL for DSS RM Server',
+             'type'  : 'string',
+             'mode'  : 'w',
+            },
+            {'id'    : 'application_id',
+             'label' : 'Numeric ID for application associated with Plone instance',
+             'type'  : 'string',
+             'mode'  : 'w',
+            },
+            {'id'    : 'api_username',
+             'label' : 'Username for RM API Key',
+             'type'  : 'string',
+             'mode'  : 'w',
+            },
+            {'id'    : 'api_key',
+             'label' : 'RM API Key',
+             'type'  : 'string',
+             'mode'  : 'w',
+            })
+
+
+    user_model = "pas.plugins.sqlalchemy.model.User"
+    principal_model = "pas.plugins.sqlalchemy.model.Principal"
+    group_model = "pas.plugins.sqlalchemy.model.Group"
+
+    def __init__( self, id, title=None, dssrm_url=None, application_id=None,
+                  api_username=None, api_key=None ):
         self._setId( id )
         self.title = title
+        if dssrm_url:
+            self.dssrm_url = dssrm_url
+        if application_id:
+            self.application_id = application_id
+        if api_username:
+            self.api_username = api_username
+        if api_key:
+            self.api_key = api_key
 
 
 

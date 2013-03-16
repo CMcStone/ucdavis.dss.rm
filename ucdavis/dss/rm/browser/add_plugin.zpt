@@ -15,7 +15,7 @@
         </tr>
         <tr>
           <td class="form-label">Title</td>
-          <td><input type="text" name="title" tal:attributes="value request/dssrm_title|string:DSS Roles Management Plugin"/></td>
+          <td><input type="text" name="title" tal:attributes="value request/title|string:DSS Roles Management Plugin"/></td>
         </tr>
         <tr>
           <td class="form-label">DSS RM Instance URL</td>
