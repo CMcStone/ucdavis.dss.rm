@@ -46,10 +46,6 @@ class RmHelper( # -*- implemented plugins -*-
             })
 
 
-    user_model = "pas.plugins.sqlalchemy.model.User"
-    principal_model = "pas.plugins.sqlalchemy.model.Principal"
-    group_model = "pas.plugins.sqlalchemy.model.Group"
-
     def __init__( self, id, title=None, dssrm_url=None, application_id=None,
                   api_username=None, api_key=None ):
         self._setId( id )
