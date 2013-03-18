@@ -11,6 +11,7 @@ import interface
 import plugins
 
 class RmHelper( # -*- implemented plugins -*-
+                    plugins.user_factory.UserFactoryPlugin,
                     plugins.properties.PropertiesPlugin,
                     plugins.user_enumeration.UserEnumerationPlugin,
                     plugins.roles.RolesPlugin,

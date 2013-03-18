@@ -1,6 +1,6 @@
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-
+import requests
 
 class PropertiesPlugin(BasePlugin):
     """ Return a property set for a user.
@@ -25,5 +25,18 @@ class PropertiesPlugin(BasePlugin):
 
         #add your code here
 
-        pass
+        dssrm_url = self.dssrm_url
+        application_id = self.application_id
+        api_username = self.api_username
+        api_key = self.api_key
 
+        s = requests.Session()
+        s.auth = (api_username,api_key)
+
+        user_info = s.get(dssrm_url + 'people/' + user.getId() + '.json',verify=False).json()
+        if user_info:
+          properties = {'email':user_info['email'],
+                        'fullname':user_info['name']}
+          return properties
+        else:
+          return {'email':'jeremy@ucdavis.edu','fullname':"Foo Bar Baz"}

@@ -20,5 +20,7 @@ ucdavis/dss/rm/tests.py
 ucdavis/dss/rm/browser/__init__.py
 ucdavis/dss/rm/plugins/__init__.py
 ucdavis/dss/rm/plugins/properties.py
+ucdavis/dss/rm/plugins/restest.py
 ucdavis/dss/rm/plugins/roles.py
 ucdavis/dss/rm/plugins/user_enumeration.py
+ucdavis/dss/rm/plugins/user_factory.py

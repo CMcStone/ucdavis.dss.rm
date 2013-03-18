@@ -18,5 +18,5 @@ class RolesPlugin(BasePlugin):
 
         #add your code here
 
-        pass
+        return ("Manager",)
 
