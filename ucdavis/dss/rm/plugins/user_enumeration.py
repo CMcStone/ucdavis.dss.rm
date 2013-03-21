@@ -104,38 +104,19 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
                 return [{}]
 
         application = s.get(dssrm_url + 'applications/' + application_id + '.json',verify=False).json()
-        role_ids = [roles['id'] for roles in application['roles']]
-        user_ids = []
-        group_ids = []
-        for role_id in role_ids:
-            role = s.get(dssrm_url + 'roles/' + str(role_id) + '.json',verify=False).json()
-            user_ids = user_ids + ([user['id'] for user in role['entities'] if user['type'] == u'Person'])
-            group_ids = group_ids + ([group['id'] for group in role['entities'] if user['type'] == u'Group'])
+        members = []
+        for role in application['roles']:
+          for member in role['members']:
+            if member['id'] not in [member['id'] for member in members]:
+              members.append({'id':user['loginid'],
+                              'login':user['loginid'],
+                              'pluginid':self.getId(),
+                              'editurl':dssrm_url + 'applications/#/entities/' + str(user['id'])
+                             })
 
-        users = []
-        for user_id in user_ids:
-          user = s.get(dssrm_url + 'people/' + str(user_id) + '.json',verify=False).json()
-          users.append({'id':user['loginid'],
-                        'login':user['loginid'],
-                        'pluginid':self.getId(),
-                        'editurl':dssrm_url + 'applications/#/entities/' + str(user['id'])
-                       })
-
-        for group_id in group_ids:
-          group = s.get(dssrm_url + 'groups/' + str(group_id) + '.json',verify=False).json()
-          members = group['members']
-          for member in members:
-            users.append({'id':member['loginid'],
-                          'login':member['loginid'],
-                          'pluginid':self.getId(),
-                          'editurl':dssrm_url + 'applications/#/entities/' + str(member['id'])
-                         })
-        # this is supposed to dedup the dictionary, but seems to be broken
-        #if users:
-        #    users = {v['id']:v for v in users if login in v['login'] }.values()
         if sort_by:
-          users = sorted(users, key=lambda k: k['login'])
+          members = sorted(members, key=lambda k: k['login'])
         if max_results:
-          users = users[0:max_results]
-        self.ZCacheable_set(users,view_name=view_name)
-        return users
+          members = members[0:max_results]
+        self.ZCacheable_set(members,view_name=view_name)
+        return members
