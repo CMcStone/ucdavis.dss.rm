@@ -2,7 +2,10 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 import requests
 
-class UserEnumerationPlugin(BasePlugin):
+from OFS.Cache import Cacheable
+from Products.PluggableAuthService.utils import createViewName
+
+class UserEnumerationPlugin(BasePlugin, Cacheable):
     """Allow querying users by ID, and searching for users.
 
     o XXX:  can these be done by a single plugin?
@@ -60,6 +63,19 @@ class UserEnumerationPlugin(BasePlugin):
         """
 
         #add your code here
+
+        cachekey = { 'id' : id,
+                     'login' : login,
+                     'exact_match' : exact_match,
+                     'sort_by' : sort_by,
+                     'max_results' : max_results
+                   }
+
+        view_name = createViewName('enumerateUsers',cachekey)
+        cached_info = self.ZCacheable_get(view_name)
+        if cached_info is not None:
+          return cached_info
+
         dssrm_url = self.dssrm_url
         application_id = self.application_id
         api_username = self.api_username
@@ -82,6 +98,7 @@ class UserEnumerationPlugin(BasePlugin):
                             'pluginid':self.getId(),
                             'editurl':dssrm_url + 'applications/#/entities/' + str(user['id'])
                            }
+                self.ZCacheable_set([userdict],view_name=view_name)
                 return [userdict]
             else:
                 return [{}]
@@ -119,5 +136,6 @@ class UserEnumerationPlugin(BasePlugin):
         if sort_by:
           users = sorted(users, key=lambda k: k['login'])
         if max_results:
-          return users[0:max_results]
+          users = users[0:max_results]
+        self.ZCacheable_set(users,view_name=view_name)
         return users

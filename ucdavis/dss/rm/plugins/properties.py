@@ -2,7 +2,10 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 import requests
 
-class PropertiesPlugin(BasePlugin):
+from OFS.Cache import Cacheable
+from Products.PluggableAuthService.utils import createViewName
+
+class PropertiesPlugin(BasePlugin, Cacheable):
     """ Return a property set for a user.
     """
     security = ClassSecurityInfo()
@@ -25,6 +28,11 @@ class PropertiesPlugin(BasePlugin):
 
         #add your code here
 
+        view_name = createViewName('getPropertiesForUser',user.getId())
+        cached_info = self.ZCacheable_get(view_name)
+        if cached_info is not None:
+          return cached_info
+
         dssrm_url = self.dssrm_url
         application_id = self.application_id
         api_username = self.api_username
@@ -37,6 +45,7 @@ class PropertiesPlugin(BasePlugin):
         if user_info:
           properties = {'email':user_info['email'],
                         'fullname':user_info['name']}
+          self.ZCacheable_set(properties,view_name=view_name)
           return properties
         else:
-          return {'email':'jeremy@ucdavis.edu','fullname':"Foo Bar Baz"}
+          return {}

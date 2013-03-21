@@ -10,12 +10,14 @@ from Products.PluggableAuthService.utils import classImplements
 import interface
 import plugins
 
+from OFS.Cache import Cacheable
+
 class RmHelper( # -*- implemented plugins -*-
                     plugins.user_factory.UserFactoryPlugin,
                     plugins.properties.PropertiesPlugin,
                     plugins.user_enumeration.UserEnumerationPlugin,
                     plugins.roles.RolesPlugin,
-                    BasePlugin           ):
+                    BasePlugin, Cacheable      ):
     """Multi-plugin
 
     """
@@ -60,7 +62,10 @@ class RmHelper( # -*- implemented plugins -*-
         if api_key:
             self.api_key = api_key
 
-
+    manage_options = (
+                      BasePlugin.manage_options
+                      + Cacheable.manage_options
+                      )
 
 classImplements(RmHelper, interface.IRmHelper)
 
