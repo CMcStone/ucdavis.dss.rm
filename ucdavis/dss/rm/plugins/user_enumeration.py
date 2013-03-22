@@ -107,11 +107,11 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
         members = []
         for role in application['roles']:
           for member in role['members']:
-            if member['id'] not in [member['id'] for member in members]:
-              members.append({'id':user['loginid'],
-                              'login':user['loginid'],
+            if member['id'] not in [m['id'] for m in members]:
+              members.append({'id':member['loginid'],
+                              'login':member['loginid'],
                               'pluginid':self.getId(),
-                              'editurl':dssrm_url + 'applications/#/entities/' + str(user['id'])
+                              'editurl':dssrm_url + 'applications/#/entities/' + str(member['id'])
                              })
 
         if sort_by:
