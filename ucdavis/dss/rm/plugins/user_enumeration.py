@@ -96,7 +96,8 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
                 userdict = {'id':user['loginid'],
                             'login':user['loginid'],
                             'pluginid':self.getId(),
-                            'editurl':dssrm_url + 'applications/#/entities/' + str(user['id'])
+                            'editurl':dssrm_url + 'applications/#/entities/' + str(user['id']),
+                            'fullname':user['name']
                            }
                 self.ZCacheable_set([userdict],view_name=view_name)
                 return [userdict]
@@ -111,9 +112,12 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
               members.append({'id':member['loginid'],
                               'login':member['loginid'],
                               'pluginid':self.getId(),
-                              'editurl':dssrm_url + 'applications/#/entities/' + str(member['id'])
+                              'editurl':dssrm_url + 'applications/#/entities/' + str(member['id']),
+                              'fullname':member['name']
                              })
-
+        print kw
+        if 'name' in kw.keys():
+          members = [member for member in members if kw['name'].upper() in member['fullname'].upper()] 
         if sort_by:
           members = sorted(members, key=lambda k: k['login'])
         if max_results:
