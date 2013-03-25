@@ -68,7 +68,8 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
                      'login' : login,
                      'exact_match' : exact_match,
                      'sort_by' : sort_by,
-                     'max_results' : max_results
+                     'max_results' : max_results,
+                     'kwargs' : kw
                    }
 
         view_name = createViewName('enumerateUsers',cachekey)
@@ -115,9 +116,8 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
                               'editurl':dssrm_url + 'applications/#/entities/' + str(member['id']),
                               'fullname':member['name']
                              })
-        print kw
         if 'name' in kw.keys():
-          members = [member for member in members if kw['name'].upper() in member['fullname'].upper()] 
+          members = [member for member in members if kw['name'].upper() in member['fullname'].upper()]
         if sort_by:
           members = sorted(members, key=lambda k: k['login'])
         if max_results:
