@@ -42,7 +42,10 @@ class PropertiesPlugin(BasePlugin, Cacheable):
         s.auth = (api_username,api_key)
         s.headers.update({'Accept':'application/vnd.roles-management.v1'})
 
-        user_info = s.get(dssrm_url + 'api/people/' + user.getId() + '.json',verify=False).json()
+        try:
+          user_info = s.get(dssrm_url + 'api/people/' + user.getId() + '.json',verify=False).json()
+        except:
+          user_info = None
 
         if user_info:
           properties = {'email':user_info['email'],

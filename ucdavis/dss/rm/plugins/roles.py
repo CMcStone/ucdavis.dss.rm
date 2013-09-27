@@ -6,6 +6,9 @@ import requests
 from OFS.Cache import Cacheable
 from Products.PluggableAuthService.utils import createViewName
 
+import logging
+
+logger = logging.getLogger("Plone")
 
 
 class RolesPlugin(BasePlugin, Cacheable):
@@ -40,8 +43,7 @@ class RolesPlugin(BasePlugin, Cacheable):
 
         person = s.get(dssrm_url + 'api/people/' + str(principal) + '.json',verify=False).json()
 
-        userRoles = [role['name'] for role in person['role_assignments'] if role['application_id'] == application_id]
-
+        userRoles = [role['name'] for role in person['role_assignments'] if int(role['application_id']) == int(application_id)]
         self.ZCacheable_set(userRoles, view_name=view_name)
 
         return userRoles
