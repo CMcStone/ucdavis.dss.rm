@@ -33,14 +33,14 @@ class PropertiesPlugin(BasePlugin, Cacheable):
 
         #add your code here
 
-        logger.info('Entering getPropertiesForUser.')
+#        logger.info('Entering getPropertiesForUser.')
 
         view_name = createViewName('getPropertiesForUser',user.getId())
         cached_info = self.ZCacheable_get(view_name)
         if cached_info is not None:
-          logger.info('Cache hit!')
+#          logger.info('Cache hit!')
           return cached_info
-        logger.info('Cache miss!')
+#        logger.info('Cache miss!')
 
         dssrm_url = self.dssrm_url
         application_id = self.application_id
