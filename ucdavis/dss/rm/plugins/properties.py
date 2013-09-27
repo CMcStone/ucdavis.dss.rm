@@ -5,6 +5,11 @@ import requests
 from OFS.Cache import Cacheable
 from Products.PluggableAuthService.utils import createViewName
 
+import logging
+
+logger = logging.getLogger("Plone")
+
+
 class PropertiesPlugin(BasePlugin, Cacheable):
     """ Return a property set for a user.
     """
@@ -28,10 +33,14 @@ class PropertiesPlugin(BasePlugin, Cacheable):
 
         #add your code here
 
+        logger.info('Entering getPropertiesForUser.')
+
         view_name = createViewName('getPropertiesForUser',user.getId())
         cached_info = self.ZCacheable_get(view_name)
         if cached_info is not None:
+          logger.info('Cache hit!')
           return cached_info
+        logger.info('Cache miss!')
 
         dssrm_url = self.dssrm_url
         application_id = self.application_id

@@ -69,6 +69,8 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
 
         #add your code here
 
+        logger.info('Entering enumerateUsers.')
+
         cachekey = { 'id' : id,
                      'login' : login,
                      'exact_match' : exact_match,

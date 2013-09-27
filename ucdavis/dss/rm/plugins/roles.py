@@ -27,10 +27,15 @@ class RolesPlugin(BasePlugin, Cacheable):
 
         #add your code here
 
+        logger.info('Entering getRolesForPrincipal.')
+
         view_name = createViewName('getRolesForPrincipal',principal)
         cached_info = self.ZCacheable_get(view_name)
         if cached_info is not None:
+          logger.info('Cache hit!')
           return cached_info
+        logger.info('Cache miss!')
+
 
         dssrm_url = self.dssrm_url
         application_id = self.application_id
