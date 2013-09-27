@@ -86,6 +86,22 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
         s.auth = (api_username,api_key)
         s.headers.update({'Accept':'application/vnd.roles-management.v1'})
 
+
+        def userDictFromLogin(login):
+          user = s.get(dssrm_url + 'api/people/' + login + '.json',verify=False).json()
+          if user:
+            userdict = {'id':user['loginid'],
+                        'login':user['loginid'],
+                        'pluginid':self.getId(),
+                        'editurl':dssrm_url + 'applications/#/entities/' + str(user['id']),
+                        'fullname':user['name']
+                       }
+            self.ZCacheable_set([userdict],view_name=view_name)
+            return [userdict]
+          else:
+            return [{}]
+
+
         # Plone may search by either login or id, but they're always the same
         if id == None and login != None:
           id=login
@@ -93,30 +109,26 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
           login=id
 
         if exact_match:
-            user = s.get(dssrm_url + 'api/people/' + login + '.json',verify=False).json()
-            if user:
-                userdict = {'id':user['loginid'],
-                            'login':user['loginid'],
-                            'pluginid':self.getId(),
-                            'editurl':dssrm_url + 'applications/#/entities/' + str(user['id']),
-                            'fullname':user['name']
-                           }
-                self.ZCacheable_set([userdict],view_name=view_name)
-                return [userdict]
-            else:
-                return [{}]
+          return userDictFromLogin(login=login)
 
+        # Find all role IDs for the application.
         application = s.get(dssrm_url + 'api/applications/' + application_id + '.json',verify=False).json()
+        roleids = [ role['id'] for role in application['roles']]
+
+        # build a list of unique loginids across all roles in the application
+        loginids = []        
+        for roleid in roleids:
+          role = s.get('https://roles.dss.ucdavis.edu/api/roles/' + roleid + '.json').json()
+          mids = [ m['loginid'] for m in role['members'] ]
+          for mid in mids:
+            if mid not in loginids:
+              loginids.append(mid)
+
+        # build user disctionaries for all application users
         members = []
-        for role in application['roles']:
-          for member in role['members']:
-            if member['id'] not in [m['id'] for m in members]:
-              members.append({'id':member['loginid'],
-                              'login':member['loginid'],
-                              'pluginid':self.getId(),
-                              'editurl':dssrm_url + 'applications/#/entities/' + str(member['id']),
-                              'fullname':member['name']
-                             })
+        for loginid in loginids:
+          members.append(userDictFromLogin(login=loginid)
+          
         if 'name' in kw.keys():
           members = [member for member in members if kw['name'].upper() in member['fullname'].upper()]
         if sort_by:
