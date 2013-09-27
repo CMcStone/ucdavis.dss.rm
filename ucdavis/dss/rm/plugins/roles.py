@@ -36,14 +36,12 @@ class RolesPlugin(BasePlugin, Cacheable):
 
         s = requests.Session()
         s.auth = (api_username,api_key)
+        s.headers.update({'Accept':'application/vnd.roles-management.v1'})
 
-        application = s.get(dssrm_url + 'applications/' + application_id + '.json',verify=False).json()
+        person = s.get(dssrm_url + 'api/people/' + principal + '.json',verify=False).json()
 
-        appRoles = [{role['token']:[member['loginid'] for member in role['members']]} for role in application['roles']]
-        userRoles = []
-        for role in appRoles:
-          if str(principal) in role.values()[0]:
-            userRoles.extend([key for key in role.keys()])
+        userRoles = [role['name'] for role in person['role_assignments'] if role['application_id'] == application_id]
+
         self.ZCacheable_set(userRoles, view_name=view_name)
-        return userRoles
 
+        return userRoles

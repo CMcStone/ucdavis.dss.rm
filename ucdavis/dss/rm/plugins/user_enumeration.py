@@ -84,6 +84,7 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
 
         s = requests.Session()
         s.auth = (api_username,api_key)
+        s.headers.update({'Accept':'application/vnd.roles-management.v1'})
 
         # Plone may search by either login or id, but they're always the same
         if id == None and login != None:
@@ -92,7 +93,7 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
           login=id
 
         if exact_match:
-            user = s.get(dssrm_url + 'people/' + login + '.json',verify=False).json()
+            user = s.get(dssrm_url + 'api/people/' + login + '.json',verify=False).json()
             if user:
                 userdict = {'id':user['loginid'],
                             'login':user['loginid'],
@@ -105,7 +106,7 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
             else:
                 return [{}]
 
-        application = s.get(dssrm_url + 'applications/' + application_id + '.json',verify=False).json()
+        application = s.get(dssrm_url + 'api/applications/' + application_id + '.json',verify=False).json()
         members = []
         for role in application['roles']:
           for member in role['members']:
