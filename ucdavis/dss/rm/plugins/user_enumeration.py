@@ -5,6 +5,11 @@ import requests
 from OFS.Cache import Cacheable
 from Products.PluggableAuthService.utils import createViewName
 
+import logging
+
+logger = logging.getLogger("Plone")
+
+
 class UserEnumerationPlugin(BasePlugin, Cacheable):
     """Allow querying users by ID, and searching for users.
 
@@ -88,7 +93,10 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
 
 
         def userDictFromLogin(login):
-          user = s.get(dssrm_url + 'api/people/' + login + '.json',verify=False).json()
+          try:
+            user = s.get(dssrm_url + 'api/people/' + login + '.json',verify=False).json()
+          except:
+            user = None
           if user:
             userdict = {'id':user['loginid'],
                         'login':user['loginid'],
@@ -97,9 +105,9 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
                         'fullname':user['name']
                        }
             self.ZCacheable_set([userdict],view_name=view_name)
-            return [userdict]
+            return userdict
           else:
-            return [{}]
+            return {}
 
 
         # Plone may search by either login or id, but they're always the same
@@ -109,7 +117,7 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
           login=id
 
         if exact_match:
-          return userDictFromLogin(login=login)
+          return [userDictFromLogin(login=login)]
 
         # Find all role IDs for the application.
         application = s.get(dssrm_url + 'api/applications/' + application_id + '.json',verify=False).json()
@@ -118,7 +126,7 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
         # build a list of unique loginids across all roles in the application
         loginids = []        
         for roleid in roleids:
-          role = s.get('https://roles.dss.ucdavis.edu/api/roles/' + roleid + '.json').json()
+          role = s.get('https://roles.dss.ucdavis.edu/api/roles/' + str(roleid) + '.json').json()
           mids = [ m['loginid'] for m in role['members'] ]
           for mid in mids:
             if mid not in loginids:
@@ -127,7 +135,7 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
         # build user disctionaries for all application users
         members = []
         for loginid in loginids:
-          members.append(userDictFromLogin(login=loginid)
+          members.append(userDictFromLogin(login=loginid))
           
         if 'name' in kw.keys():
           members = [member for member in members if kw['name'].upper() in member['fullname'].upper()]

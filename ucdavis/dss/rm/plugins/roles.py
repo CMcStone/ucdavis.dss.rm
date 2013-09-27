@@ -38,7 +38,7 @@ class RolesPlugin(BasePlugin, Cacheable):
         s.auth = (api_username,api_key)
         s.headers.update({'Accept':'application/vnd.roles-management.v1'})
 
-        person = s.get(dssrm_url + 'api/people/' + principal + '.json',verify=False).json()
+        person = s.get(dssrm_url + 'api/people/' + str(principal) + '.json',verify=False).json()
 
         userRoles = [role['name'] for role in person['role_assignments'] if role['application_id'] == application_id]
 
