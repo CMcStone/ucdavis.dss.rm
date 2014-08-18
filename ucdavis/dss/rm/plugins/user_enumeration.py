@@ -104,7 +104,8 @@ class UserEnumerationPlugin(BasePlugin, Cacheable):
                         'login':user['loginid'],
                         'pluginid':self.getId(),
                         'editurl':dssrm_url + 'applications/#/entities/' + str(user['id']),
-                        'fullname':user['name']
+                        'fullname':user['name'],
+                        'email':user['email']
                        }
             self.ZCacheable_set([userdict],view_name=view_name)
             return userdict
