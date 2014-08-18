@@ -46,7 +46,12 @@ class RolesPlugin(BasePlugin, Cacheable):
         s.auth = (api_username,api_key)
         s.headers.update({'Accept':'application/vnd.roles-management.v1'})
 
-        person = s.get(dssrm_url + 'api/people/' + str(principal) + '.json',verify=False).json()
+        person = s.get(dssrm_url + 'api/people/' + str(principal) + '.json',verify=False)
+
+        try:
+          person = person.json()
+        except:
+          return []
 
         userRoles = [role['name'] for role in person['role_assignments'] if int(role['application_id']) == int(application_id)]
         self.ZCacheable_set(userRoles, view_name=view_name)
