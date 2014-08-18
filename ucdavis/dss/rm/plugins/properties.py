@@ -53,7 +53,7 @@ class PropertiesPlugin(BasePlugin, Cacheable):
 
         try:
           user_info = s.get(dssrm_url + 'api/people/' + user.getId() + '.json',verify=False).json()
-          print user_info['name']
+          #print user_info['name']
         except:
           user_info = None
 
